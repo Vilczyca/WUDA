@@ -12,20 +12,31 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
+import environ
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+env = environ.Env(
+    DJANGO__DEBUG=(bool, False),
+    DB__ENGINE=(str, "django.db.backends.postgresql"),
+)
+env.read_env(os.path.join(BASE_DIR, ".env"))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%ymny-!plsi=7pq)lqqwh-8+(q9(33z-4ut_d4uw(*o2^syadc'
+# SECURITY WARNING: keep the secret key used in production secret! -> DONE!
+SECRET_KEY = env("DJANGO__SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production! -> DONE!
+DEBUG = env.bool("DJANGO__DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list(
+    "DJANGO__ALLOWED_HOSTS",
+    default=["localhost", "127.0.0.1"],
+)
 
 
 # Application definition
@@ -74,12 +85,29 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+if env("DB__URL", default=""):
+    DATABASES = {
+        "default": env.db_url_config("DB__URL"),
     }
-}
+elif env("DB__ENGINE") == "django.db.backends.sqlite3":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": env("DB__ENGINE"),
+            "NAME": env("DB__NAME"),
+            "USER": env("DB__USER"),
+            "PASSWORD": env("DB__PASSWORD"),
+            "HOST": env("DB__HOST"),
+            "PORT": env("DB__PORT", default="5432"),
+        }
+    }
 
 
 # Password validation

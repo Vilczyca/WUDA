@@ -1,0 +1,2 @@
+Django>=6.1.2   # modern, security-supported version for production
+django-environ  # environment configuration
