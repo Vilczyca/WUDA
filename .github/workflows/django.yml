@@ -5,7 +5,8 @@ on:
     branches: ["master"]
   pull_request:
     branches: ["master"]
-
+env:
+  DJANGO__SECRET_KEY: ${{ secrets.DJANGO__SECRET_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest
