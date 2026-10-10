@@ -18,6 +18,9 @@ RUN uv sync --locked --no-dev --no-install-project
 # Copy application code
 COPY . .
 
+RUN python manage.py collectstatic --noinput
+
+
 EXPOSE 8000
 
 CMD ["sh", "-c", "python manage.py migrate && exec gunicorn mysite.wsgi:application --bind 0.0.0.0:8000"]
