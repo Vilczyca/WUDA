@@ -8,4 +8,20 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = []
+dev = [
+    "ruff>=0.17.0",
+]
+
+# RUFF CONFIGURATION
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".venv",
+    "migrations",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+# E - detects code style issues and formatting errors
+# F - detects logical errors, unused imports, and undefined names
+# I - checks and organizes import order

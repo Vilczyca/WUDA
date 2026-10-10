@@ -119,3 +119,15 @@ The application should now be running! If you see 404 - everything is ok.
 To stop the server, press `Ctrl + C` in the terminal.
 
 **Next time:** Navigate to the project folder, activate the virtual environment, and run `python manage.py runserver` again. You don't need to reinstall the requirements or clone the repository. If you use uv, simply run `uv run python manage.py runserver` without activating the environment.
+
+## Additional tools
+
+### Code linting (Ruff)
+
+Ruff checks Python code for style issues, unused imports, and other common errors.
+
+```bash
+
+uv run ruff check .
+uv run ruff check . --fix
+```
