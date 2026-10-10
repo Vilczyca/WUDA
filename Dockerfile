@@ -18,8 +18,12 @@ RUN uv sync --locked --no-dev --no-install-project
 # Copy application code
 COPY . .
 
-RUN python manage.py collectstatic --noinput
-
+RUN DJANGO__SECRET_KEY="build-only-not-a-secret" \
+    DB__NAME="build" \
+    DB__USER="build" \
+    DB__PASSWORD="build" \
+    DB__HOST="localhost" \
+    python manage.py collectstatic --noinput
 
 EXPOSE 8000
 

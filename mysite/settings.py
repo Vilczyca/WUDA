@@ -105,10 +105,10 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": env("DB__ENGINE"),
-            "NAME": env("DB__NAME"),
-            "USER": env("DB__USER"),
-            "PASSWORD": env("DB__PASSWORD"),
-            "HOST": env("DB__HOST"),
+            "NAME": env("DB__NAME", default="wuda"),
+            "USER": env("DB__USER", default="wuda"),
+            "PASSWORD": env("DB__PASSWORD", default=""),
+            "HOST": env("DB__HOST", default="localhost"),
             "PORT": env("DB__PORT", default="5432"),
         }
     }
