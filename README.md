@@ -27,98 +27,109 @@ git clone https://github.com/Vilczyca/WUDA.git
 cd WUDA
 ```
 
-## 2. Virtual Environment and Requirements
+## 2. Virtual Environment and Dependencies
 
 Think of a virtual environment as an isolated, soundproof box for this specific project. It ensures that the Python libraries we install for this app don't mess up any other applications on your computer.
 
-We use **uv** to manage Python dependencies and the virtual environment. It is an alternative to manually creating a virtual environment and installing packages with `pip`.
+We use **uv** to manage Python dependencies and the virtual environment.
 
 ### What are `pyproject.toml` and `uv.lock`?
 
 - **`pyproject.toml`** contains project configuration and information about the Python libraries the application needs.
 - **`uv.lock`** records the exact versions of dependencies so that the same versions can be installed consistently on different computers.
 
-Both files should be included in the repository.
+Both files should be included in the repository. We use these files instead of `requirements.txt`.
 
-### Option A: Use a virtual environment
-
-#### Create the virtual environment
-
-A folder named `.venv` will appear:
-
-```bash
-python -m venv .venv
-```
-
-#### Activate it
-
-On Windows, run:
-
-```powershell
-.\.venv\Scripts\activate
-```
-
-You should now see `(.venv)` at the beginning of your terminal line.
-
-#### Install the required libraries
-
-```bash
-pip install -r requirements.txt
-```
-
-This installs all the Python libraries required to run the application.
-
-Once the virtual environment is activated, use the commands shown in the following sections normally, without adding `uv run` before them.
-
-### Option B: Use uv
-
-If the project is configured with `pyproject.toml` and `uv.lock`, you can let uv manage the environment automatically.
+### Install uv
 
 Install uv by following the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/).
 
-To install the project dependencies and prepare the virtual environment, run:
+### Install dependencies
+
+From the project directory, run:
 
 ```bash
 uv sync
 ```
 
-You do not need to activate `.venv` manually. Instead of running commands directly, prefix them with `uv run`, for example:
+This installs the project dependencies and prepares the `.venv` virtual environment automatically.
+
+You do not need to activate `.venv` manually. Prefix commands with `uv run` to run them in the project environment, for example:
 
 ```bash
 uv run python manage.py check
 ```
 
-The following sections show the commands using Option A. If you choose Option B, use the equivalent commands with `uv run`.
-
-## 3. Running the Application
+## 3. Running the Application Locally
 
 ### Prepare the database
 
 Run the following command to apply the database migrations:
 
-- With `.venv` activated, run the command as shown.
-- Alternatively, prefix the command with `uv run` to run it without activating the virtual environment.
-
 ```bash
-python manage.py migrate
+uv run python manage.py migrate
 ```
 
 ### Start the application
 
+Start application with:
+
 ```bash
-python manage.py runserver
+uv run python manage.py runserver
 ```
 
+**Note**: For local development on Windows, use Django's development server. Docker runs the application using Gunicorn inside a Linux container.
 
 Open your browser and go to:
 
 [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
-The application should now be running! If you see 404 - everything is ok.
+The application should now be running! If you see a 404 page, everything is okay.
 
 To stop the server, press `Ctrl + C` in the terminal.
 
-**Next time:** Navigate to the project folder, activate the virtual environment, and run `python manage.py runserver` again. You don't need to reinstall the requirements or clone the repository. If you use uv, simply run `uv run python manage.py runserver` without activating the environment.
+**Next time:** Navigate to the project folder and run `uv run python manage.py runserver` again. You don't need to reinstall the dependencies or clone the repository.
+## 4. Running with Docker
+
+Docker lets you run the application in a container without manually installing Python and project dependencies on your computer.
+
+### Install Docker
+
+Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+Make sure Docker Desktop is running before executing Docker commands.
+
+### Build the Docker image
+
+From the project directory, run:
+
+```bash
+docker build -t wuda .
+```
+
+This builds a Docker image named `wuda` using the project's `Dockerfile`.
+
+### Start the application
+
+```bash
+docker run --rm -p 8000:8000 --env-file .env wuda
+```
+
+This starts the application in a container, loads environment variables from `.env`, and makes the application available on port 8000.
+
+Open your browser and go to:
+
+[http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+To stop the application, press `Ctrl + C`. The `--rm` option automatically removes the container when it stops.
+
+**Next time:** You don't need to rebuild the image unless the application code, dependencies, or Docker configuration have changed. Simply run:
+
+```bash
+docker run --rm -p 8000:8000 --env-file .env wuda
+```
+
+**Note:** Make sure the `.env` file exists in the project directory and contains the required environment variables. Do not commit this file if it contains secrets.
 
 ## Additional tools
 
@@ -127,7 +138,6 @@ To stop the server, press `Ctrl + C` in the terminal.
 Ruff checks Python code for style issues, unused imports, and other common errors.
 
 ```bash
-
 uv run ruff check .
 uv run ruff check . --fix
 ```
