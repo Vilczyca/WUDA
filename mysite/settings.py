@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env = environ.Env(
     DJANGO__DEBUG=(bool, False),
-    DB__ENGINE=(str, "django.db.backends.sqlite3"),
+    DB__ENGINE=(str, "django.db.backends.postgresql"),
 )
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
