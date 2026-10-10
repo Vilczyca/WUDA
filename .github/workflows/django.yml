@@ -7,6 +7,12 @@ on:
     branches: ["master"]
 env:
   DJANGO__SECRET_KEY: ${{ secrets.DJANGO__SECRET_KEY }}
+  DB__NAME: ${{ secrets.DB__NAME }}
+  DB__USER: ${{ secrets.DB__USER }}
+  DB__PASSWORD: ${{ secrets.DB__PASSWORD }}
+  DB__HOST: ${{ secrets.DB__HOST }}
+  DB__PORT: ${{ secrets.DB__PORT }}
+  
 jobs:
   build:
     runs-on: ubuntu-latest
